@@ -188,6 +188,12 @@ pool(fit, rule = "reiter2003")
 Reiter, J.P. (2003). Inference for Partially Synthetic, Public Use Microdata Sets. Survey Methodology, 29, 181-189.
 :::
 
+## Now how do we know we did well?
+::: callout-important
+# I'm really sorry!
+In practice we don't know if we did well, because we often lack the necessary comparative truths. 
+:::
+
 ## The `mice` experts
 
 Don't hesitate to contact us! In the meantime, have a look at all our wonderful materials at [amices.org/mice/](https://amices.org/mice/).
