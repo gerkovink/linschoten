@@ -1,0 +1,52 @@
+---
+title: "linschoten"
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+```{r}
+1 + 1
+```
+
+
+## The `mice` team
+
+Don't hesitate to contact us!
+
+::::{.columns}
+:::{.column width="33%"}
+![](img/synth.png){width=85%}
+:::
+:::{.column width="33%"}
+![](img/synth.png){width=85%}
+:::
+:::{.column width="33%"}
+![](img/synth.png){width=85%}
+:::
+::::
+
+::::{.columns}
+:::{.column width="33%"}
+![](img/stef.png){width=85%}
+:::
+:::{.column width="33%"}
+![](img/gerko.png){width=85%}
+:::
+:::{.column width="33%"}
+![](img/hanne.png){width=85%}
+:::
+::::
+
+::::{.columns}
+:::{.column width="33%"}
+![](img/thom.png){width=85%}
+:::
+:::{.column width="33%"}
+![](img/kyle.png){width=85%}
+:::
+:::{.column width="33%"}
+![](img/huma.png){width=85%}
+:::
+::::

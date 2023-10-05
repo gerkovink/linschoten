@@ -1,0 +1,225 @@
+---
+title: "From Dark Data to Answers with `mice`"
+author: 
+  - name: Gerko Vink on behalf of the `mice` team
+    orcid: 0000-0001-9767-1924
+    email: g.vink@uu.nl
+    affiliations:
+      - name: Methodology & Statistics @ Utrecht University
+date: 05 Oct 2023
+date-format: "D MMM YYYY"
+execute: 
+  echo: true
+format: 
+  revealjs:
+    theme: [solarized, gerko.scss]
+    progress: true
+    margin: 0.075
+    logo: mice.png 
+    toc: false
+    toc-depth: 1
+    toc-title: Outline
+    slide-number: true
+    scrollable: false
+    width: 1200
+    reference-location: margin
+    footer: Gerko Vink @ Linschoten lecture - Oct 5, 2023, Utrecht
+    standalone: true
+---
+
+## Disclaimer
+
+I owe a debt of gratitude to many people as the thoughts and code in these slides are the process of years-long development cycles and discussions with my team, friends, colleagues and peers. When someone has contributed to the content of the slides, I have credited their authorship.
+
+Scientific references are in the footer. Opinions and figures are my own, AI-generated or directly linked.
+
+::: callout-tip
+# Materials
+- slides: [www.gerkovink.com/linschoten](https://www.gerkovink.com/AI4Managers)
+- source: [github.com/gerkovink/linschoten](https://github.com/gerkovink/AI4Managers)
+:::
+
+
+## Terms I may use
+
+- TDGM: True data generating model
+- DGP: Data generating process, closely related to the TDGM, but with all the wacky additional uncertainty
+- Truth: The comparative truth that we are interested in
+- Bias: The distance to the comparative truth
+- Variance: When not everything is the same
+- Estimate: Something that we calculate or guess 
+- Estimand: The thing we aim to estimate and guess
+- Population: That larger entity without sampling variance
+- Sample: The smaller thing with sampling variance
+- Incomplete: There exists a more complete version, but we don't have it
+- Observed: What we have
+- Unobserved: What we would also like to have
+
+## At the start
+
+Let's start with the core:
+
+::: {.callout-note appearance="simple"}
+# Statistical inference
+Statistical inference is the process of drawing conclusions from **truths**
+:::
+
+Truths are boring, but they are convenient. 
+
+- however, for most problems truths require a lot of calculations, tallying or a complete census. 
+- therefore, a proxy of the truth is in most cases sufficient 
+- An example for such a proxy is a **sample**
+- Samples are widely used and have been for a long time<footnote>See [Jelke Bethlehem's CBS discussion paper](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwjkyPTCs4L3AhUCuKQKHUpmBvIQFnoECAMQAw&url=https%3A%2F%2Fwww.cbs.nl%2F-%2Fmedia%2Fimported%2Fdocuments%2F2009%2F07%2F2009-15-x10-pub.pdf&usg=AOvVaw3BpUW2s_k0MB5yH1o-QGf2) for an overview of the history of sampling within survey statistics</footnote>
+
+
+::: footer 
+$^1$ See [Jelke Bethlehem's CBS discussion paper](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwjkyPTCs4L3AhUCuKQKHUpmBvIQFnoECAMQAw&url=https%3A%2F%2Fwww.cbs.nl%2F-%2Fmedia%2Fimported%2Fdocuments%2F2009%2F07%2F2009-15-x10-pub.pdf&usg=AOvVaw3BpUW2s_k0MB5yH1o-QGf2) for an overview of the history of survey sampling
+:::
+
+
+## Do we need data?
+Without any data we can still come up with a statistically valid answer. 
+
+ - The answer will not be very *informative*. 
+ - In order for our answer to be more informative, we need more **information**
+
+Some sources of information can already tremendously guide the precision of our answer. 
+
+::: {.callout-tip}
+# In Short
+Information bridges the answer to the truth. Too little information may lead you to a *false truth*. 
+:::
+
+## Confidence in the answer
+::::{.columns}
+:::{.column width="60%"}
+![](img/7. confidence_intervals.png){width="90%"}
+:::
+
+::: {.column width="40%"}
+An intuitive approach to evaluating an answer is confidence. In statistics, we often use confidence intervals. Discussing confidence can be hugely informative!
+
+If we sample 100 samples from a population, then a *95% CI* will cover the **true** population value [at least 95 out of 100 times]{style="text-decoration: underline;"}. 
+
+::: {.callout-warning}
+Narrower intervals mean less uncertainty. 
+
+It does not mean that the answer is correct!
+:::
+
+:::
+::::
+
+::: footer 
+Neyman, J. (1934). On the Two Different Aspects of the Representative Method: The Method of Stratified Sampling and the Method of Purposive Selection. <br> Journal of the Royal Statistical Society Series A: Statistics in Society, 97(4), 558-606.
+:::
+
+
+## In Practice
+::::{.columns}
+:::{.column width="30%"}
+![](img/9.missingness.png){width=60%}
+:::
+
+::: {.column width="70%"}
+
+We now have a new problem:
+
+- we do not have the whole truth; but merely a sample of the truth
+- we do not even have the whole sample, but merely a sample of the sample of the truth. 
+
+
+::: {.callout-tip appearance="simple"}
+What would be a simple solution to allowing for valid inferences on the incomplete sample? Would that solution work in practice?
+:::
+
+
+:::
+::::
+
+## How to fix the missingness problem
+::::{.columns}
+:::{.column width="50%"}
+![](img/imp.png){width=80%}
+<br> A straightforward and intuitive solution for analyzing incomplete data in such scenarios is *multiple imputation* (Rubin, 1987).
+:::
+
+::: {.column width="50%"}
+There are two sources of uncertainty that we need to cover when analyzing incomplete data:
+
+1. **Uncertainty about the data values we don't have**:<br>when we don't know what the true observed value should be, we must create a distribution of values with proper variance (uncertainty).
+2. **Uncertainty about the process that generated the values we do have**:<br>nothing can guarantee that our sample is the one true sample. So it is reasonable to assume that the parameters obtained on our sample are biased. 
+
+```{r}
+#| eval: FALSE
+imp <- mice(data)
+fit <- with(imp, lm(effect ~ cause))
+pool(fit)
+```
+:::
+::::
+
+::: footer 
+Rubin, D. B. (1987). Multiple imputation for nonresponse in surveys. John Wiley & Sons.
+:::
+
+
+## How to generate synthetic sets
+::::{.columns}
+:::{.column width="50%"}
+![](img/synth.png){width=85%}
+:::
+
+::: {.column width="50%"}
+There are two sources of uncertainty that we need to cover when analyzing incomplete data:
+
+1. **Uncertainty about the data values we don't have**:<br>when we don't know what the true observed value should be, we must create a distribution of values with proper variance (uncertainty).
+2. **Uncertainty about the process that generated the values we do have**:<br>nothing can guarantee that our sample is the one true sample. So it is reasonable to assume that the parameters obtained on our sample are biased. 
+
+```{r}
+#| eval: FALSE
+pool(fit, rule = "reiter2003")
+```
+:::
+::::
+
+
+::: footer 
+Reiter, J.P. (2003). Inference for Partially Synthetic, Public Use Microdata Sets. Survey Methodology, 29, 181-189.
+:::
+
+## The `mice` experts
+
+Don't hesitate to contact us!
+
+::::{.columns}
+:::{.column width="16%"}
+![](img/stef.png){width=85%}
+Stef <br> Van Buuren
+:::
+:::{.column width="16%"}
+![](img/gerko.png){width=85%}
+Gerko <br> Vink
+:::
+:::{.column width="16%"}
+![](img/hanne.png){width=85%}
+Hanne <br> Oberman
+:::
+::::
+
+::::{.columns}
+:::{.column width="16%"}
+![](img/thom.png){width=85%}
+Thom <br> Volker
+:::
+:::{.column width="16%"}
+![](img/kyle.png){width=85%}
+Kyle <br> Lang
+:::
+:::{.column width="16%"}
+![](img/huma.png){width=85%}
+Huma <br> Shehwana
+:::
+::::
+
+Have a look at all our materials at [amices.org/mice/](https://amices.org/mice/).
