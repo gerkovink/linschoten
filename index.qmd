@@ -190,7 +190,7 @@ Reiter, J.P. (2003). Inference for Partially Synthetic, Public Use Microdata Set
 
 ## The `mice` experts
 
-Don't hesitate to contact us!
+Don't hesitate to contact us! In the meantime, have a look at all our wonderful materials at [amices.org/mice/](https://amices.org/mice/).
 
 ::::{.columns}
 :::{.column width="16%"}
@@ -222,4 +222,11 @@ Huma <br> Shehwana
 :::
 ::::
 
-Have a look at all our materials at [amices.org/mice/](https://amices.org/mice/).
+::: {.callout-note}
+## Useful links
+- [amices.org/mice/](https://amices.org/mice/)
+- [the `mice` vignettes](https://www.gerkovink.com/miceVignettes/)
+- Van Buuren, S. (2018). [Flexible Imputation of Missing Data. Second Edition.](https://stefvanbuuren.name/fimd/) Chapman & Hall/CRC. Boca Raton, FL.
+:::
+
+
