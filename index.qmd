@@ -202,19 +202,19 @@ Stef <br> Van Buuren
 Gerko <br> Vink
 :::
 :::{.column width="16%"}
-![](img/hanne.png){width=85%}
-Hanne <br> Oberman
+![](img/kyle.png){width=85%}
+Kyle <br> Lang
 :::
 ::::
 
 ::::{.columns}
 :::{.column width="16%"}
-![](img/thom.png){width=85%}
-Thom <br> Volker
+![](img/hanne.png){width=85%}
+Hanne <br> Oberman
 :::
 :::{.column width="16%"}
-![](img/kyle.png){width=85%}
-Kyle <br> Lang
+![](img/thom.png){width=85%}
+Thom <br> Volker
 :::
 :::{.column width="16%"}
 ![](img/huma.png){width=85%}
